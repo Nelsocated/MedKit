@@ -1,5 +1,5 @@
 name: medkit
-description: "A new Flutter project."
+description: "A home medicine cabinet tracker that warns families when medicines are expired, expiring soon or running low, and looks up what each medicine is for."
 publish_to: 'none'
 version: 0.1.0+1
 
@@ -9,6 +9,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^1.6.0
+  intl: ^0.20.3
+  provider: ^6.1.5+1
+  shared_preferences: ^2.5.6
 
 dev_dependencies:
   flutter_test:
