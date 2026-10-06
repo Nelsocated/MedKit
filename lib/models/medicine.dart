@@ -37,4 +37,33 @@ class Medicine {
     required this.forWhom,
     required this.notes,
   });
+
+  bool isExpired(DateTime today) {
+    return dateOnly(expiryDate).isBefore(dateOnly(today));
+  }
+
+  bool isExpiringSoon(DateTime today) {
+    if (isExpired(today)) {
+      return false;
+    }
+    final lastDay = DateTime(today.year, today.month, today.day + 30);
+    return !dateOnly(expiryDate).isAfter(lastDay);
+  }
+
+  bool get isLowStock {
+    return quantity <= lowStockAt;
+  }
+
+  MedicineStatus status(DateTime today) {
+    if (isExpired(today)) {
+      return MedicineStatus.expired;
+    }
+    if (isExpiringSoon(today)) {
+      return MedicineStatus.expiringSoon;
+    }
+    if (isLowStock) {
+      return MedicineStatus.lowStock;
+    }
+    return MedicineStatus.ok;
+  }
 }
