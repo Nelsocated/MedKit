@@ -1,3 +1,5 @@
+import 'package:intl/intl.dart';
+
 enum MedicineStatus { expired, expiringSoon, lowStock, ok }
 
 DateTime dateOnly(DateTime value) {
@@ -65,5 +67,31 @@ class Medicine {
       return MedicineStatus.lowStock;
     }
     return MedicineStatus.ok;
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'dosage': dosage,
+      'quantity': quantity,
+      'low_stock_at': lowStockAt,
+      'expiry_date': DateFormat('yyyy-MM-dd').format(expiryDate),
+      'for_whom': forWhom,
+      'notes': notes,
+    };
+  }
+
+  factory Medicine.fromJson(Map<String, dynamic> json) {
+    return Medicine(
+      id: json['id'],
+      name: json['name'],
+      dosage: json['dosage'],
+      quantity: json['quantity'],
+      lowStockAt: json['low_stock_at'],
+      expiryDate: DateFormat('yyyy-MM-dd').parse(json['expiry_date']),
+      forWhom: json['for_whom'],
+      notes: json['notes'],
+    );
   }
 }
