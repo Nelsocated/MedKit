@@ -40,4 +40,69 @@ class MedicineProvider extends ChangeNotifier {
     await storage.deleteMedicine(id);
     await loadMedicines();
   }
+
+  List<Medicine> _medicinesWithStatus(MedicineStatus status, DateTime today) {
+    final List<Medicine> result = [];
+    for (final medicine in medicines) {
+      if (medicine.status(today) == status) {
+        result.add(medicine);
+      }
+    }
+    return result;
+  }
+
+  List<Medicine> expiredMedicines(DateTime today) {
+    return _medicinesWithStatus(MedicineStatus.expired, today);
+  }
+
+  List<Medicine> expiringSoonMedicines(DateTime today) {
+    return _medicinesWithStatus(MedicineStatus.expiringSoon, today);
+  }
+
+  List<Medicine> lowStockMedicines(DateTime today) {
+    return _medicinesWithStatus(MedicineStatus.lowStock, today);
+  }
+
+  List<String> familyMembers() {
+    final List<String> members = [];
+    for (final medicine in medicines) {
+      if (!members.contains(medicine.forWhom)) {
+        members.add(medicine.forWhom);
+      }
+    }
+    members.sort();
+    return members;
+  }
+
+  Medicine? findById(int id) {
+    for (final medicine in medicines) {
+      if (medicine.id == id) {
+        return medicine;
+      }
+    }
+    return null;
+  }
+
+  List<Medicine> filterMedicines(
+    String query,
+    MedicineStatus? status,
+    String? member,
+  ) {
+    final today = DateTime.now();
+    final lowerQuery = query.trim().toLowerCase();
+    final List<Medicine> result = [];
+    for (final medicine in medicines) {
+      if (!medicine.name.toLowerCase().contains(lowerQuery)) {
+        continue;
+      }
+      if (status != null && medicine.status(today) != status) {
+        continue;
+      }
+      if (member != null && medicine.forWhom != member) {
+        continue;
+      }
+      result.add(medicine);
+    }
+    return result;
+  }
 }
