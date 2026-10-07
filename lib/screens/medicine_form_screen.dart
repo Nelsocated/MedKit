@@ -73,6 +73,31 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
     }
   }
 
+  String? _validateRequired(String? value, String message) {
+    if (value == null || value.trim().isEmpty) {
+      return message;
+    }
+    return null;
+  }
+
+  String? _validateWholeNumber(String? value) {
+    if (value == null) {
+      return 'Enter a whole number (0 or more)';
+    }
+    final number = int.tryParse(value.trim());
+    if (number == null || number < 0) {
+      return 'Enter a whole number (0 or more)';
+    }
+    return null;
+  }
+
+  String? _validateExpiryDate(String? value) {
+    if (_expiryDate == null) {
+      return 'Please pick an expiry date';
+    }
+    return null;
+  }
+
   void _save() {
     _formKey.currentState!.validate();
   }
@@ -97,6 +122,8 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
                 TextFormField(
                   controller: _nameController,
                   decoration: const InputDecoration(labelText: 'Name'),
+                  validator: (value) =>
+                      _validateRequired(value, 'Please enter a name'),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -111,6 +138,7 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
                   controller: _quantityController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(labelText: 'Quantity'),
+                  validator: _validateWholeNumber,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -119,6 +147,7 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
                   decoration: const InputDecoration(
                     labelText: 'Low stock alert at',
                   ),
+                  validator: _validateWholeNumber,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -132,6 +161,7 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
                     helperMaxLines: 2,
                     suffixIcon: Icon(Icons.calendar_today),
                   ),
+                  validator: _validateExpiryDate,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
@@ -140,6 +170,8 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
                     labelText: 'For whom',
                     hintText: 'e.g. Mom, Everyone',
                   ),
+                  validator: (value) =>
+                      _validateRequired(value, 'Please enter who it is for'),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
