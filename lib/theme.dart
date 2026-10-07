@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
 ThemeData buildAppTheme() {
-  final colorScheme = ColorScheme.fromSeed(seedColor: const Color(0xFF1565C0));
+  const medicalBlue = Color(0xFF1565C0);
+  final colorScheme = ColorScheme.fromSeed(
+    seedColor: medicalBlue,
+    primary: medicalBlue,
+  );
 
   return ThemeData(
     useMaterial3: true,

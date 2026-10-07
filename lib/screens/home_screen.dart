@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../routes.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -16,6 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _openAddForm() {
+    Navigator.of(context).pushNamed(Routes.medicineForm);
+  }
+
   @override
   Widget build(BuildContext context) {
     final tabs = IndexedStack(
@@ -27,12 +33,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
     );
 
+    final showAddButton = _selectedIndex < 2;
     final width = MediaQuery.of(context).size.width;
 
     if (width < 800) {
       return Scaffold(
         appBar: AppBar(title: const Text('MedKit')),
         body: tabs,
+        floatingActionButton: showAddButton
+            ? FloatingActionButton.extended(
+                onPressed: _openAddForm,
+                icon: const Icon(Icons.add),
+                label: const Text('Add medicine'),
+              )
+            : null,
         bottomNavigationBar: NavigationBar(
           selectedIndex: _selectedIndex,
           onDestinationSelected: _selectTab,
@@ -59,6 +73,13 @@ class _HomeScreenState extends State<HomeScreen> {
             selectedIndex: _selectedIndex,
             onDestinationSelected: _selectTab,
             labelType: NavigationRailLabelType.all,
+            leading: showAddButton
+                ? FloatingActionButton(
+                    onPressed: _openAddForm,
+                    tooltip: 'Add medicine',
+                    child: const Icon(Icons.add),
+                  )
+                : null,
             destinations: const [
               NavigationRailDestination(
                 icon: Icon(Icons.dashboard),
