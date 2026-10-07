@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../models/medicine.dart';
+import '../providers/medicine_provider.dart';
 
 class MedicineFormScreen extends StatefulWidget {
   final Medicine? medicine;
@@ -22,6 +24,7 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
   final _forWhomController = TextEditingController();
   final _notesController = TextEditingController();
   DateTime? _expiryDate;
+  bool _isSaving = false;
 
   @override
   void initState() {
@@ -98,8 +101,59 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
     return null;
   }
 
-  void _save() {
-    _formKey.currentState!.validate();
+  Future<void> _save() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
+    int? id;
+    if (widget.medicine != null) {
+      id = widget.medicine!.id;
+    }
+
+    final medicine = Medicine(
+      id: id,
+      name: _nameController.text.trim(),
+      dosage: _dosageController.text.trim(),
+      quantity: int.parse(_quantityController.text.trim()),
+      lowStockAt: int.parse(_lowStockController.text.trim()),
+      expiryDate: _expiryDate!,
+      forWhom: _forWhomController.text.trim(),
+      notes: _notesController.text.trim(),
+    );
+
+    final provider = context.read<MedicineProvider>();
+    final navigator = Navigator.of(context);
+    final messenger = ScaffoldMessenger.of(context);
+
+    setState(() {
+      _isSaving = true;
+    });
+
+    try {
+      if (widget.medicine == null) {
+        await provider.addMedicine(medicine);
+        navigator.pop();
+        messenger.showSnackBar(const SnackBar(content: Text('Medicine added')));
+      } else {
+        await provider.updateMedicine(medicine);
+        navigator.pop();
+        messenger.showSnackBar(
+          const SnackBar(content: Text('Medicine updated')),
+        );
+      }
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _isSaving = false;
+        });
+        messenger.showSnackBar(
+          const SnackBar(
+            content: Text('Could not save the medicine. Please try again.'),
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -181,7 +235,7 @@ class _MedicineFormScreenState extends State<MedicineFormScreen> {
                 ),
                 const SizedBox(height: 24),
                 FilledButton(
-                  onPressed: _save,
+                  onPressed: _isSaving ? null : _save,
                   child: const Text('Save medicine'),
                 ),
               ],
