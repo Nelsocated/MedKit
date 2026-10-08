@@ -5,6 +5,7 @@ import 'models/medicine.dart';
 import 'providers/medicine_provider.dart';
 import 'routes.dart';
 import 'screens/home_screen.dart';
+import 'screens/medicine_detail_screen.dart';
 import 'screens/medicine_form_screen.dart';
 import 'services/storage_service.dart';
 import 'theme.dart';
@@ -30,6 +31,16 @@ class MedKitApp extends StatelessWidget {
   const MedKitApp({super.key});
 
   Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    if (settings.name == Routes.medicineDetail) {
+      final argument = settings.arguments;
+      if (argument is int) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => MedicineDetailScreen(medicineId: argument),
+        );
+      }
+    }
+
     if (settings.name == Routes.medicineForm) {
       final argument = settings.arguments;
       if (argument == null) {
