@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../routes.dart';
+import 'medicine_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
       index: _selectedIndex,
       children: const [
         Center(child: Text('Dashboard coming soon')),
-        Center(child: Text('Medicines coming soon')),
+        MedicineListScreen(),
         Center(child: Text('Drug Info coming soon')),
       ],
     );
