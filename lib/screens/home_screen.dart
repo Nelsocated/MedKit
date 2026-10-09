@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../routes.dart';
+import 'dashboard_screen.dart';
 import 'medicine_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -28,7 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final tabs = IndexedStack(
       index: _selectedIndex,
       children: const [
-        Center(child: Text('Dashboard coming soon')),
+        DashboardScreen(),
         MedicineListScreen(),
         Center(child: Text('Drug Info coming soon')),
       ],
