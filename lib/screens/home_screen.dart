@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../routes.dart';
 import 'dashboard_screen.dart';
+import 'drug_info_screen.dart';
 import 'medicine_list_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -31,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen> {
       children: const [
         DashboardScreen(),
         MedicineListScreen(),
-        Center(child: Text('Drug Info coming soon')),
+        DrugInfoScreen(),
       ],
     );
 
