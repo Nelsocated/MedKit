@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 
 import 'models/medicine.dart';
+import 'providers/drug_info_provider.dart';
 import 'providers/medicine_provider.dart';
 import 'routes.dart';
+import 'screens/drug_info_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/medicine_detail_screen.dart';
 import 'screens/medicine_form_screen.dart';
+import 'services/drug_info_service.dart';
 import 'services/storage_service.dart';
 import 'theme.dart';
 
@@ -20,6 +24,9 @@ void main() {
             provider.loadMedicines();
             return provider;
           },
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DrugInfoProvider(DrugInfoService(http.Client())),
         ),
       ],
       child: const MedKitApp(),
@@ -53,6 +60,20 @@ class MedKitApp extends StatelessWidget {
         return MaterialPageRoute(
           settings: settings,
           builder: (context) => MedicineFormScreen(medicine: argument),
+        );
+      }
+    }
+
+    if (settings.name == Routes.drugInfo) {
+      final argument = settings.arguments;
+      if (argument is String) {
+        return MaterialPageRoute(
+          settings: settings,
+          builder: (context) => ChangeNotifierProvider(
+            create: (context) =>
+                DrugInfoProvider(DrugInfoService(http.Client())),
+            child: DrugInfoScreen(initialQuery: argument, showAppBar: true),
+          ),
         );
       }
     }
