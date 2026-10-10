@@ -21,13 +21,20 @@ class DrugInfoService {
       'limit': '10',
     });
 
-    final response = await _get(url);
+    http.Response response = await _get(url);
+    if (response.statusCode == 429) {
+      await Future.delayed(const Duration(seconds: 2));
+      response = await _get(url);
+    }
 
     if (response.statusCode == 200) {
       return _parseResults(response.body);
     }
     if (response.statusCode == 404) {
       return [];
+    }
+    if (response.statusCode == 429) {
+      throw Exception('Too many requests. Please try again in a minute.');
     }
     throw Exception('Could not load drug info (code ${response.statusCode}).');
   }
