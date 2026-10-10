@@ -12,6 +12,7 @@ class DrugInfoProvider extends ChangeNotifier {
   List<DrugInfo> results = [];
   String errorMessage = '';
   String lastQuery = '';
+  int _searchCount = 0;
 
   DrugInfoProvider(this.service);
 
@@ -21,12 +22,17 @@ class DrugInfoProvider extends ChangeNotifier {
       return;
     }
 
+    _searchCount++;
+    final myCount = _searchCount;
     lastQuery = query;
     state = SearchState.loading;
     notifyListeners();
 
     try {
       final found = await service.search(query);
+      if (myCount != _searchCount) {
+        return;
+      }
       results = found;
       if (found.isEmpty) {
         state = SearchState.empty;
@@ -34,6 +40,9 @@ class DrugInfoProvider extends ChangeNotifier {
         state = SearchState.success;
       }
     } catch (error) {
+      if (myCount != _searchCount) {
+        return;
+      }
       results = [];
       errorMessage = error.toString().replaceFirst('Exception: ', '');
       state = SearchState.error;
