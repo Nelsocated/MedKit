@@ -1,4 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart' as http;
 
@@ -21,10 +23,19 @@ class DrugInfoService {
       'limit': '10',
     });
 
-    http.Response response = await _get(url);
-    if (response.statusCode == 429) {
-      await Future.delayed(const Duration(seconds: 2));
+    http.Response response;
+    try {
       response = await _get(url);
+      if (response.statusCode == 429) {
+        await Future.delayed(const Duration(seconds: 2));
+        response = await _get(url);
+      }
+    } on SocketException {
+      throw Exception('No internet connection.');
+    } on http.ClientException {
+      throw Exception('No internet connection.');
+    } on TimeoutException {
+      throw Exception('The request took too long. Please try again.');
     }
 
     if (response.statusCode == 200) {
