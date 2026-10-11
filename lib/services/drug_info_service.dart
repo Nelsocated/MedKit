@@ -19,7 +19,7 @@ class DrugInfoService {
     final cleanName = name.replaceAll('"', '');
     final url = Uri.https('api.fda.gov', '/drug/label.json', {
       'search':
-          'openfda.brand_name:"$cleanName"+openfda.generic_name:"$cleanName"',
+          'openfda.brand_name:"$cleanName" openfda.generic_name:"$cleanName"',
       'limit': '10',
     });
 
